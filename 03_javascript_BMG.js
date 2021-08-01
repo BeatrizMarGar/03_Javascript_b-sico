@@ -1,50 +1,42 @@
-/*
-Estos 24 equipos se agrupan en 6 grupos de 4 equipos cada uno. Aunque en realidad hay reglas
-sobre cómo los equipos se distribuyen en los grupos, para esta práctica se ignorarán (será de
-forma aleatoria)
-Los grupos se nombran por letras en orden alfabético, desde la A hasta la F.s
-*/
-function start(){
-var total_equipos = ['Spain', 'Portugal', 'Italy', 'France', 'Belgium', 'San Marino', 'Bulgaria', 'Croatia', 'Denmark', 'Estonia', 'Germany', 'Grece', 'Hungary', 'Iceland', 'Malta', 'Montenegro', 'Norway', 'Poland','Russia', 'Scotland', 'Sweden', 'Switzerland', 'Ukraine', 'Austria'];
-var grupos = ['A', 'B', 'C', 'D', 'E', 'F'];
-var liga_grupos = {}
-var teamforgroup = 4;
-var rondas = []
-let team_object = ""
-let Group_structure = ""
-console.log(`generando ${grupos.length} grupos de ${teamforgroup} equipos, de un total de ${total_equipos.length}`)
-for (let i in grupos){
-    var new_group = [];
-    for (var z = 1; z <= teamforgroup; z++){
-        var demo = Math.floor(Math.random()*(total_equipos.length));
-        team_object = new Team(total_equipos[demo]);
-        //console.log(total_equipos[demo])
-        new_group.push(team_object)
-        total_equipos.splice(demo, 1)
-    }
-    liga_grupos[grupos[i]]=new_group
-    //console.log("chivato", new_group)
-    //console.log(grupos[i])
-    Group_structure = new Group(grupos[i], new_group);
-   
-}
+//Declaro variables globales
 
-liga = new League();
-
-}
 let terceros = []
 let clasificatorias = []
-
 let old_number = 7
+
+function start(){
+    //declaro los equipos y las variables que voy a utilizar más adelante
+    var total_equipos = ['Spain', 'Portugal', 'Italy', 'France', 'Belgium', 'San Marino', 'Bulgaria', 'Croatia', 'Denmark', 'Estonia', 'Germany', 'Grece', 'Hungary', 'Iceland', 'Malta', 'Montenegro', 'Norway', 'Poland','Russia', 'Scotland', 'Sweden', 'Switzerland', 'Ukraine', 'Austria'];
+    var grupos = ['A', 'B', 'C', 'D', 'E', 'F'];
+    var liga_grupos = {}
+    var teamforgroup = 4;
+    let team_object = ""
+    let Group_structure = ""
+
+    console.log("=========== EMPIEZA LA FRASE DE GRUPOS ===============")
+    console.log(`Se han generado ${grupos.length} grupos de ${teamforgroup} equipos, de un total de ${total_equipos.length}`)
+
+    for (let i in grupos){
+        var new_group = [];
+        for (var z = 1; z <= teamforgroup; z++){
+            var demo = Math.floor(Math.random()*(total_equipos.length));
+            team_object = new Team(total_equipos[demo]);
+            new_group.push(team_object)
+            total_equipos.splice(demo, 1)
+        }
+        liga_grupos[grupos[i]]=new_group
+        Group_structure = new Group(grupos[i], new_group);
+    }
+    liga = new League();
+}
+
 class Team{
     constructor(j){
         this.name = j;
         this.goals = "";
         this.points = "";
         this.bydefault()
-        //console.log(this)
     }
-    
     bydefault(){
         this.goals = 0;
         this.points = 0;
@@ -88,15 +80,15 @@ class Group {
 
         //console.log(t1, t1["goals"], rand, t2, t2["goals"], rand)
 
-        if (t1["goals"] > t2["goals"]){
+        if (rand_t1 > rand_t2){
             t1["points"] = t1["points"] +3;
             t2["points"] = t2["points"] +0;
         }
-        else if (t2["goals"] > t1["goals"]){
+        else if (rand_t2 > rand_t1){
             t2["points"] = t2["points"] +3;
             t1["points"] = t1["points"] +0;
         }
-        else if (t1["goals"] == t2["goals"]){
+        else if (rand_t1 == rand_t2){
             t1["points"] = t1["points"] +1;
             t2["points"] = t2["points"] +1;
         }
@@ -107,10 +99,16 @@ class Group {
     }
     
     CreateRound(){
-        console.log("------ RONDA GRUPO " + this.NameGroup + "-------")
-        let round_1 = []
-        let round_2 = []
-        let round_3 = []
+        console.log('\n', "------ RONDA GRUPO " + this.NameGroup + "-------")
+        console.log("EQUIPOS PARTICIPANTES DE ESTA RONDA")
+        console.log( '\n', this.team1["name"], '\n', this.team2["name"], '\n', this.team3["name"], '\n', this.team4["name"], '\n' )
+        let round_1 = [this.team1, this.team4, this.team2, this.team3]
+        let round_2 = [this.team4, this.team3, this.team1, this.team2 ]
+        let round_3 = [this.team2, this.team4, this.team3, this.team1 ]
+        console.log('\n', "JORNADA 1", '\n', "-", round_1[0]["name"], "vs", round_1[1]["name"], '\n', "-", round_1[2]["name"], "vs", round_1[3]["name"])
+        console.log('\n', "JORNADA 2", '\n', "-", round_2[0]["name"], "vs", round_2[1]["name"], '\n', "-", round_2[2]["name"], "vs", round_2[3]["name"])
+        console.log('\n', "JORNADA 3", '\n', "-", round_3[0]["name"], "vs", round_3[1]["name"], '\n', "-", round_3[2]["name"], "vs", round_3[3]["name"], '\n')
+        console.log('\n',"================================================================", '\n',"===================== COMIENZA LA RONDA", this.NameGroup, " =====================",'\n',"================================================================", '\n')
         let First_match = this.CreateMatch(this.team1, this.team4) 
         let Second_match = this.CreateMatch(this.team2, this.team3)
         let Third_match = this.CreateMatch(this.team4, this.team3) 
@@ -125,28 +123,24 @@ class Group {
     Winner_per_round(){
         let nombre = this.NameGroup;
         let numbers = []
-        let control = ""
-        //console.log(nombre, this["team1"]["points"])
         for(let i = 1; i <= 4; i++ ){
             numbers.push(Object.values(this)[i])
 
             numbers.sort(function (a, b) {
-                if (a.points > b.points) {
-                  return -1;
-                }
-                if (a.points < b.points) {
-                  return 1;
-                }
-                // a must be equal to b
+                    if (a.points > b.points) {
+                    return -1;
+                    }
+                    if (a.points < b.points) {
+                    return 1;
+                    }
                 else {
                     
-                if (a.goals > b.goals) {
-                    return -1;
-                  }
-                  if (a.goals < b.goals) {
-                    return 1;
+                    if (a.goals > b.goals) {
+                        return -1;
+                    }
+                    if (a.goals < b.goals) {
+                        return 1;
                 }
-
                 else {
                     if (a.name > b.name) {
                         return 1;
@@ -192,7 +186,10 @@ class Group {
         }
         this.primero = numbers[0]["name"];
         this.segundo = numbers[1]["name"];
-        console.log("ronda:", nombre," ganador:", numbers[0]["name"], "segundo:", numbers[1]["name"])
+        console.log("===================== ", "FIN DE LA RONDA", nombre, ". RESULTADOS: ==============================")
+        console.log("GANADOR DE LA RONDA:", numbers[0]["name"])
+        console.log("SEGUNDO CLASIFICADO:", numbers[1]["name"])
+        console.log("=====================================================================================")
 
     }
 
@@ -253,7 +250,6 @@ class Round_match{
             }
             round_1['Partido_6'][`${round_1['Partido_6']['Local']}`] = 44 // añado el valor de local y le añado el numero 
             let dem =  Object.values(round_1);
-            //console.log(dem, Object.values(dem)[3])
     }
 
     Aleatorio(){
@@ -265,9 +261,6 @@ class Round_match{
         let numero_final = generateRandomInteger(6);
         return numero_final;
     }
-
-   
-
 }
 
 let round = []
@@ -281,6 +274,8 @@ class League{
        this.locales = [],
        this.visitantes = [],
        this.cuartos = [],
+       this.ganadores = []
+       this.part = [],
        this.semifinales = [],
        this.finales = []
        this.ganadorLiga = []
@@ -294,7 +289,6 @@ class League{
     }
 
     SetupTeams(){
-        //console.log("terceros", terceros, terceros[0])
         for(var i = 0; i <= 3; i++){
             this.terceros.push(terceros[i]["name"])
         }
@@ -305,14 +299,19 @@ class League{
                 this.segundos.push(clasificatorias[i])
             }
         }
-        console.log("los playoffs", clasificatorias, this)
     }
 
     SetupMatch(){
-        console.log("============== COMIENZO DE LA FASE DE ELIMINATORIAS =================")
-        console.log("============= OCTAVOS DE FINAL =================")
+        console.log("LOS CLASIFICADOS DE LOS PLAYOFFS SON:", clasificatorias)
+        this.SetupTeams()
+        console.log('\n',"===============================================", '\n',"==== COMIENZO DE LA FASE DE ELIMINATORIAS =====", '\n',"===============================================",)
+        console.log('\n',"======= EQUIPOS PARTICPANTES ORDENADOS: =======")
+        let participantes = []
+        participantes.push(...this.locales)
+        participantes.push(...this.visitantes)
+        console.log('\n', participantes,'\n')
+        console.log('\n', "============= OCTAVOS DE FINAL =================")
         let octavo = {"PARTIDO" : "", "local" : "", "local_goals" : "", "visitante": "", "visit_goals": "", "ganador": ""}
-        //let octavos = ["PARTIDO" + name_match, local_team, local_team_goals, "-", visit_team, visit_team_goals, "El ganador es" + ganador]
         for (var i = 0; i <= 7; i++){
             octavo.PARTIDO = "Q" + (i + 1);
             octavo.local = this.locales[i]
@@ -339,9 +338,10 @@ class League{
     Cuartos(){
         console.log("==================CUARTOS DE FINAL=================")
         let cuartos = {"PARTIDO" : "", "local" : "", "local_goals" : "", "visitante": "", "visit_goals": "", "ganador": ""}
-        //let octavos = ["PARTIDO" + name_match, local_team, local_team_goals, "-", visit_team, visit_team_goals, "El ganador es" + ganador]
-
         for (var i = 0; i <= 7; i++){
+            let suma = i+1
+            let resta = 9 - suma
+            cuartos.PARTIDO = "Q"+ suma + "-" + "Q" + resta
             cuartos.local = this.cuartos[i]
             cuartos.visitante = this.cuartos[i+1]
             cuartos.visit_goals = this.Random()
@@ -356,16 +356,19 @@ class League{
     
         this.semifinales.push(cuartos.ganador)
         console.log(cuartos)
+        this.ganadores.push(cuartos.PARTIDO)
         }
-        console.log("GANADORES DE LOS CUARTOS ", this.semifinales)
+
+        console.log("======================= GANADORES DE LOS CUARTOS ===================")
+        console.log(this.semifinales)
+        console.log("==================================================================")
     }
 
     Finales(){
+        console.log("=================== EMPIEZAN LAS FINALES ===========================")
         let finales = {"PARTIDO" : "", "local" : "", "local_goals" : "", "visitante": "", "visit_goals": "", "ganador": ""}
-        //let octavos = ["PARTIDO" + name_match, local_team, local_team_goals, "-", visit_team, visit_team_goals, "El ganador es" + ganador]
-
         for (var i = 0; i <= 3; i++){
-            finales.PARTIDO = "CUARTOS " + (i);
+            finales.PARTIDO = "Ganador " + this.ganadores[i] + " vs Ganador " + this.ganadores[i+1]
             finales.local = this.cuartos[i]
             finales.visitante = this.cuartos[i+1]
             finales.visit_goals = this.Random()
@@ -381,7 +384,9 @@ class League{
         console.log(finales)
         this.finales.push(finales.ganador)
               }
-        console.log("GANADORES DE LAS FINALES ", this.finales)
+        console.log("=================== GANADORES DE LAS FINALES =================")
+        console.log( this.finales)
+        console.log("============================================================")
         
     }
 
@@ -399,6 +404,9 @@ class League{
             final.ganador = final.local
         }
         console.log(final)
+        console.log("==================================================")
+        console.log("¡¡¡¡¡¡¡", final.ganador, "Ganador de la EUROCOPA !!!!!!")
+        console.log("==================================================")
     }
 
     SetLocal(){
@@ -433,10 +441,14 @@ class League{
         }
 
         let numero_final = generateRandomInteger(6);
+        let new_numer = ""
 
         if (numero_final == old_number){
-            let new_numer = generateRandomInteger(6);
-            
+            do {
+                new_numer = generateRandomInteger(6);
+                //console.log("en el do while", numero_final, old_number, new_numer)
+              }
+              while (new_numer == old_number);
             //console.log ("old", old_number, "nuevo", numero_final, "repe", new_numer)
             old_number = new_numer;
             return new_numer;
@@ -447,8 +459,6 @@ class League{
             return numero_final;
         }
     }
-
-
 }
 
 start();
