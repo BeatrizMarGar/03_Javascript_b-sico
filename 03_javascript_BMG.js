@@ -310,8 +310,9 @@ class League{
             octavo.PARTIDO = "Q" + (i + 1);
             octavo.local = this.locales[i]
             octavo.visitante = this.visitantes[i]
-            octavo.visit_goals = this.Random()
-            octavo.local_goals = this.Random()
+            let goles_aleatorios = this.Random()
+            octavo.visit_goals = goles_aleatorios[0]
+            octavo.local_goals = goles_aleatorios[1]
             
         if (octavo.visit_goals > octavo.local_goals){
             octavo.ganador = octavo.visitante
@@ -338,8 +339,9 @@ class League{
             cuartos.PARTIDO = "Q"+ suma + "-" + "Q" + resta
             cuartos.local = this.cuartos[i]
             cuartos.visitante = this.cuartos[i+1]
-            cuartos.visit_goals = this.Random()
-            cuartos.local_goals = this.Random()
+            let goles_aleatorios = this.Random()
+            cuartos.visit_goals = goles_aleatorios[0]
+            cuartos.local_goals = goles_aleatorios[1]
             i++
         if (cuartos.visit_goals > cuartos.local_goals){
             cuartos.ganador = cuartos.visitante
@@ -365,8 +367,9 @@ class League{
             finales.PARTIDO = "Ganador " + this.ganadores[i] + " vs Ganador " + this.ganadores[i+1]
             finales.local = this.cuartos[i]
             finales.visitante = this.cuartos[i+1]
-            finales.visit_goals = this.Random()
-            finales.local_goals = this.Random()
+            let goles_aleatorios = this.Random()
+            finales.visit_goals = goles_aleatorios[0]
+            finales.local_goals = goles_aleatorios[1]
             i++
         if (finales.visit_goals > finales.local_goals){
             finales.ganador = finales.visitante
@@ -389,8 +392,9 @@ class League{
         final.PARTIDO = "PARTIDO FINAL"
         final.local = this.finales[0]
         final.visitante =  this.finales[1]
-        final.visit_goals = this.Random()
-        final.local_goals = this.Random()
+        let goles_aleatorios = this.Random()
+        final.visit_goals = goles_aleatorios[0]
+        final.local_goals = goles_aleatorios[1]
         if (final.visit_goals > final.local_goals){
             final.ganador = final.visitante
         }
@@ -428,31 +432,22 @@ class League{
         console.log("=================GANADORES DE LOS OCTAVOS =================== ", this.cuartos, "===========================")
     }
 
-    Random(){
-        // Generar número del 0 al 5 incluidos
-        function generateRandomInteger(max) {
-            return Math.floor(Math.random() * max) ;
-        }
+    Random(mustBeDifferent=true){ 
+        let firstNumber = Math.floor(Math.random()*5) 
+        let secondNumber = Math.floor(Math.random()*5) 
+         
+        if(mustBeDifferent && (firstNumber == secondNumber)){ 
+          do { 
+            //console.log(`1 is ${firstNumber} and 2 is ${secondNumber}, so generating both again`) 
+            firstNumber = Math.floor(Math.random()*5) 
+            secondNumber = Math.floor(Math.random()*5) 
+          } while (firstNumber == secondNumber) 
+        } 
+        return [firstNumber,secondNumber] 
 
-        let numero_final = generateRandomInteger(6);
-        let new_numer = ""
-
-        if (numero_final == old_number){
-            do {
-                new_numer = generateRandomInteger(6);
-                //console.log("en el do while", numero_final, old_number, new_numer)
-              }
-              while (new_numer == old_number);
-            //console.log ("old", old_number, "nuevo", numero_final, "repe", new_numer)
-            old_number = new_numer;
-            return new_numer;
-        } else {
-            //console.log ("old", old_number, "nuevo", numero_final)
-            
-            old_number = numero_final;
-            return numero_final;
-        }
-    }
+      } 
+         
+       
 }
 
 start();
