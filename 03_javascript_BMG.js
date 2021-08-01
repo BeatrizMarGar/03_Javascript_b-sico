@@ -11,7 +11,6 @@ function start(){
     var liga_grupos = {}
     var teamforgroup = 4;
     let team_object = ""
-    let Group_structure = ""
 
     console.log("=========== EMPIEZA LA FRASE DE GRUPOS ===============")
     console.log(`Se han generado ${grupos.length} grupos de ${teamforgroup} equipos, de un total de ${total_equipos.length}`)
@@ -69,16 +68,11 @@ class Group {
     }
 
     CreateMatch(t1, t2){
-        /*let obj = this.team1;
-        obj["goals"] = 1
-        console.log(this)*/
-        //console.log(t1, t2)
         let rand_t1 = this.Aleatorio();
         let rand_t2 = this.Aleatorio();
         t1["goals"] =  t1["goals"] + rand_t1;
         t2["goals"] = t2["goals"] + rand_t2;
 
-        //console.log(t1, t1["goals"], rand, t2, t2["goals"], rand)
 
         if (rand_t1 > rand_t2){
             t1["points"] = t1["points"] +3;
@@ -209,7 +203,7 @@ class Round_match{
         this.Aleatorio();
     }
 
-    chivato(){
+    Partido_ronda(){
         let round_1 = {
                 Partido_1 : {
                     "Local": this.team_1,
